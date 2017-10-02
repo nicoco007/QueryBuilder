@@ -1,5 +1,5 @@
 {
-    "name": "nicoco007/QueryBuilder",
+    "name": "nicoco007/querybuilder",
     "description": "PDO Query Wrapper",
     "keywords": ["template", "composer", "package"],
     "license": "AGPL-3.0",
