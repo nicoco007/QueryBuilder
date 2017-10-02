@@ -33,8 +33,8 @@ class ConditionCollection {
 
         foreach ($this->conditions as $condition) {
             $built = $condition->build();
-            $conditions[] = $built->getString();
-            $parameters[] = $built->getParameter();
+            $conditions[] = $built->getQueryString();
+            $parameters = array_merge($parameters, $built->getParameters());
         }
 
         $children = array_map(function($child) {
@@ -54,14 +54,13 @@ class ConditionCollection {
     }
 
     /**
-     * @param string $column_name
-     * @param mixed $value
+     * @param Statement $statement1
+     * @param Statement $statement2
      * @param string $operator
-     * @param string|null $table_name
      * @return $this
      */
-    public function addCondition($column_name, $value, $operator = '=', $table_name = null) {
-        $this->conditions[] = new Condition($column_name, $value, $operator, $table_name);
+    public function addCondition($statement1, $statement2, $operator = '=') {
+        $this->conditions[] = new ConditionCollection(OPERATOR_AND, [new Condition($statement1, $statement2, $operator)]);
 
         return $this;
     }

@@ -7,6 +7,9 @@ abstract class Query {
     /** @var string */
     protected $table_name;
 
+    /** @var string */
+    protected $alias;
+
     /** @var ConditionCollection */
     protected $condition_collection;
 
@@ -17,20 +20,21 @@ abstract class Query {
 
     /**
      * @param string $table_name
+     * @param string|null $alias
      */
-    public function __construct($table_name) {
+    public function __construct($table_name, $alias = null) {
         $this->table_name = $table_name;
+        $this->alias = $alias;
     }
 
     /**
-     * @param string $column_name
-     * @param mixed $value
+     * @param Statement $statement1
+     * @param Statement $statement2
      * @param string $operator
-     * @param string|null $table_name
      * @return $this
      */
-    public function setCondition($column_name, $value, $operator = '=', $table_name = null) {
-        $this->condition_collection = new ConditionCollection(OPERATOR_AND, [new Condition($column_name, $value, $operator, $table_name)]);
+    public function setCondition($statement1, $statement2, $operator = '=') {
+        $this->condition_collection = new ConditionCollection(OPERATOR_AND, [new Condition($statement1, $statement2, $operator)]);
 
         return $this;
     }
@@ -43,5 +47,26 @@ abstract class Query {
         $this->condition_collection = $condition_collection;
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTableName() {
+        return $this->table_name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAlias() {
+        return $this->alias;
+    }
+
+    /**
+     * @return ConditionCollection
+     */
+    public function getConditionCollection() {
+        return $this->condition_collection;
     }
 }

@@ -4,47 +4,52 @@ namespace QueryBuilder;
 
 
 class Condition {
-    /** @var string */
-    private $column_name;
+    /** @var Statement */
+    private $statement1;
+
+    /** @var Statement */
+    private $statement2;
 
     /** @var string */
     private $operator;
 
-    /** @var mixed */
-    private $value;
-
-    /** @var null|string */
-    private $table_name;
-
     /**
      * Condition constructor.
-     * @param string $column_name
-     * @param mixed $value
+     * @param Statement $statement1
+     * @param Statement $statement2
      * @param string $operator
-     * @param string|null $table_name
      */
-    public function __construct($column_name, $value, $operator = '=', $table_name = null) {
-        $this->column_name = $column_name;
+    public function __construct($statement1, $statement2, $operator = '=') {
+        $this->statement1 = $statement1;
+        $this->statement2 = $statement2;
         $this->operator = $operator;
-        $this->value = $value;
-        $this->table_name = $table_name;
     }
 
     /**
-     * @return BuiltCondition
+     * @return BuiltQuery
      */
     public function build() {
-        if ($this->table_name !== null)
-            return new BuiltCondition(sprintf("`%s`.`%s` %s ?", $this->table_name, $this->column_name, $this->operator), $this->value);
-        else
-            return new BuiltCondition(sprintf("`%s` %s ?", $this->column_name, $this->operator), $this->value);
+        $statement1_built = $this->statement1->build();
+        $statement2_built = $this->statement2->build();
+
+        return new BuiltQuery(
+            sprintf("%s %s %s", $statement1_built->getQueryString(), $this->operator, $statement2_built->getQueryString()),
+            array_merge($statement1_built->getParameters(), $statement2_built->getParameters())
+        );
     }
 
     /**
-     * @return string
+     * @return Statement
      */
-    public function getColumnName() {
-        return $this->column_name;
+    public function getStatement1() {
+        return $this->statement1;
+    }
+
+    /**
+     * @return Statement
+     */
+    public function getStatement2() {
+        return $this->statement2;
     }
 
     /**
@@ -52,19 +57,5 @@ class Condition {
      */
     public function getOperator() {
         return $this->operator;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getValue() {
-        return $this->value;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getTableName() {
-        return $this->table_name;
     }
 }
