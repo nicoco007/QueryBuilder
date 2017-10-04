@@ -39,7 +39,7 @@ class Join {
 
         if ($this->query instanceof SelectQuery) {
             $built = $this->query->build();
-            $string = sprintf('(%s) AS `%s`', $built->getQueryString(), $this->alias);
+            $string = sprintf('(%s) AS `%s`', $built->getString(), $this->alias);
             $params = array_merge($params, $built->getParameters());
         } elseif ($this->query instanceof Statement) {
             $built = $this->query->build();
@@ -49,7 +49,7 @@ class Join {
 
         if ($this->condition_collection !== null) {
             $built = $this->condition_collection->build();
-            $string .= ' ON ' . $built->getQueryString();
+            $string .= ' ON ' . $built->getString();
             $params = array_merge($params, $built->getParameters());
         }
 

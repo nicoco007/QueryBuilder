@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Nicolas
- * Date: 2017-10-04
- * Time: 12:39
- */
 
 namespace QueryBuilder;
 
@@ -13,7 +7,7 @@ class UpdateQuery extends Query {
     /**
      * @var Assignment[]
      */
-    private $assignments;
+    private $assignments = [];
 
     /**
      * @var bool
@@ -75,7 +69,7 @@ class UpdateQuery extends Query {
 
         if ($this->condition_collection !== null) {
             $built_condition_collection = $this->condition_collection->build();
-            $query_string .= ' WHERE ' . $built_condition_collection->getQueryString();
+            $query_string .= ' WHERE ' . $built_condition_collection->getString();
             $params = array_merge($params, $built_condition_collection->getParameters());
         }
 
@@ -115,6 +109,14 @@ class UpdateQuery extends Query {
      * @return $this
      */
     public function addAssignment($column, $statement) {
+        if (!($column instanceof ColumnStatement))
+            throw new \InvalidArgumentException('Expected $column to be ColumnStatement, got ' . Util::get_type($column));
+
+        if (!($statement instanceof Statement))
+            throw new \InvalidArgumentException('Expected $statement to be Statement, got ' . Util::get_type($statement));
+
+        $this->assignments[] = new Assignment($column, $statement);
+
         return $this;
     }
 

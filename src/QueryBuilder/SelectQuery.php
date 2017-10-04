@@ -72,7 +72,7 @@ class SelectQuery extends Query {
         if ($this->joins !== null && count($this->joins) > 0) {
             foreach ($this->joins as $join) {
                 $built_join = $join->build();
-                $query .= ' JOIN ' . $built_join->getQueryString();
+                $query .= ' JOIN ' . $built_join->getString();
                 $params = array_merge($params, $built_join->getParameters());
             }
         }
@@ -80,7 +80,7 @@ class SelectQuery extends Query {
         // add where statement
         if ($this->condition_collection !== null && $this->condition_collection->has_elements()) {
             $where = $this->condition_collection->build();
-            $query .= ' WHERE ' . $where->getQueryString();
+            $query .= ' WHERE ' . $where->getString();
             $params = array_merge($params, $where->getParameters());
         }
 
@@ -166,7 +166,7 @@ class SelectQuery extends Query {
      * @return $this
      */
     public function setGroupBy($group_by) {
-        if (!($group_by instanceof Join))
+        if (!($group_by instanceof Statement))
             throw new \InvalidArgumentException('Expected $group_by to be Statement, got ' . Util::get_type($group_by));
 
         $this->group_by = $group_by;

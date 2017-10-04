@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
+use QueryBuilder\BuiltQuery;
 use QueryBuilder\SelectQuery;
 use QueryBuilder\ConditionCollection;
 use QueryBuilder\Condition;
@@ -14,10 +15,13 @@ use QueryBuilder\RawStatement;
 use PHPUnit\Framework\TestCase;
 
 final class SelectQueryTest extends TestCase {
+
     public function testSimpleQuery() {
         $built = (new SelectQuery('users'))->build();
 
-        $this->assertEquals('SELECT * FROM `users`', $built->getQueryString());
+        $this->assertEquals('SELECT * FROM `users`', $built->getString());
+
+        $this->printResults($built);
     }
 
     public function testQueryWithColumnNames() {
@@ -26,7 +30,9 @@ final class SelectQueryTest extends TestCase {
             ->addStatement(new ColumnStatement('account_type'))
             ->build();
 
-        $this->assertEquals("SELECT `username`, `account_type` FROM `users`", $built->getQueryString());
+        $this->assertEquals("SELECT `username`, `account_type` FROM `users`", $built->getString());
+
+        $this->printResults($built);
     }
 
     public function testQueryWithCondition() {
@@ -35,8 +41,10 @@ final class SelectQueryTest extends TestCase {
             ->setCondition(new ColumnStatement('id'), new RawStatement(532))
             ->build();
 
-        $this->assertEquals("SELECT `username` FROM `users` WHERE `id` = ?", $built->getQueryString());
+        $this->assertEquals("SELECT `username` FROM `users` WHERE `id` = ?", $built->getString());
         $this->assertEquals([532], $built->getParameters());
+
+        $this->printResults($built);
     }
 
     public function testQueryWithConditions() {
@@ -49,8 +57,10 @@ final class SelectQueryTest extends TestCase {
             ->setConditionCollection($condition_collection)
             ->build();
 
-        $this->assertEquals("SELECT `username` FROM `users` WHERE `id` = ? AND `confirmed` = ?", $built->getQueryString());
+        $this->assertEquals("SELECT `username` FROM `users` WHERE `id` = ? AND `confirmed` = ?", $built->getString());
         $this->assertEquals([532, true], $built->getParameters());
+
+        $this->printResults($built);
     }
 
     public function testQueryWithComplexJoin() {
@@ -76,7 +86,16 @@ final class SelectQueryTest extends TestCase {
             ->addJoin($join3)
             ->build();
 
-        $this->assertEquals("SELECT * FROM `registrations` AS `r` JOIN (SELECT `submission_id`, MAX(CASE WHEN `key` = ? THEN `value` END) AS camper_first_name, MAX(CASE WHEN `key` = ? THEN `value` END) AS camper_last_name, MAX(CASE WHEN `key` = ? THEN `value` END) AS camper_dob FROM `forms_submissions_data` GROUP BY `submission_id`) AS `c` ON `submission_id` = `r`.`camper_id` JOIN `programs` AS `p` ON `p`.`id` = `r`.`program_id` JOIN `locations` AS `l` ON `l`.`id` = `r`.`location_id`", $built->getQueryString());
+        $this->assertEquals("SELECT * FROM `registrations` AS `r` JOIN (SELECT `submission_id`, MAX(CASE WHEN `key` = ? THEN `value` END) AS camper_first_name, MAX(CASE WHEN `key` = ? THEN `value` END) AS camper_last_name, MAX(CASE WHEN `key` = ? THEN `value` END) AS camper_dob FROM `forms_submissions_data` GROUP BY `submission_id`) AS `c` ON `submission_id` = `r`.`camper_id` JOIN `programs` AS `p` ON `p`.`id` = `r`.`program_id` JOIN `locations` AS `l` ON `l`.`id` = `r`.`location_id`", $built->getString());
         $this->assertEquals([1286, 2, 3], $built->getParameters());
+
+        $this->printResults($built);
+    }
+
+    /**
+     * @param BuiltQuery $built
+     */
+    public function printResults($built) {
+        printf("Query: %s\nParameters: [%s]\n\n", $built->getString(), implode(', ', $built->getParameters()));
     }
 }
