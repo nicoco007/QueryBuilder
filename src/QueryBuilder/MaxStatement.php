@@ -20,8 +20,11 @@ class MaxStatement extends Statement {
         $this->statement = $statement;
     }
 
+    /**
+     * @return BuiltStatement
+     */
     public function build() {
         $built = $this->statement->build();
-        return new BuiltQuery(sprintf('MAX(%s)', $built->getQueryString()), $built->getParameters());
+        return new BuiltStatement(sprintf('MAX(%s)', $built->getString()), $built->getParameters());
     }
 }

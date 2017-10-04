@@ -53,7 +53,7 @@ final class SelectQueryTest extends TestCase {
         $this->assertEquals([532, true], $built->getParameters());
     }
 
-    public function testQueryWithJoin() {
+    public function testQueryWithComplexJoin() {
         $query = (new SelectQuery('forms_submissions_data'))
             ->addStatement(new ColumnStatement('submission_id'))
             ->addStatement(new MaxStatement((new CaseStatement())->addCase(new Condition(new ColumnStatement('key'), new RawStatement(1286)), new ColumnStatement('value'))), 'camper_first_name')

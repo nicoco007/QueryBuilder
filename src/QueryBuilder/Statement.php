@@ -5,7 +5,7 @@ namespace QueryBuilder;
 
 abstract class Statement {
     /**
-     * @return BuiltQuery
+     * @return BuiltStatement
      */
     public abstract function build();
 }

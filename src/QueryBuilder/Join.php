@@ -18,9 +18,14 @@ class Join {
     /**
      * @param Statement|SelectQuery $query
      * @param string $alias
-     * @internal param string $group_by
      */
     public function __construct($query, $alias) {
+        if (!($query instanceof Statement) && !($query instanceof SelectQuery))
+            throw new \InvalidArgumentException('Expected $query to be Statement or SelectQuery, got ' . Util::get_type($query));
+
+        if (!is_string($alias))
+            throw new \InvalidArgumentException('Expected $alias to be string, got '. Util::get_type($alias));
+
         $this->query = $query;
         $this->alias = $alias;
     }
@@ -38,7 +43,7 @@ class Join {
             $params = array_merge($params, $built->getParameters());
         } elseif ($this->query instanceof Statement) {
             $built = $this->query->build();
-            $string = sprintf('%s AS `%s`', $built->getQueryString(), $this->alias);
+            $string = sprintf('%s AS `%s`', $built->getString(), $this->alias);
             $params = array_merge($params, $built->getParameters());
         }
 
@@ -52,14 +57,22 @@ class Join {
     }
 
     /**
-     * @param string $column_name
-     * @param mixed $value
+     * @param Statement $statement1
+     * @param Statement $statement2
      * @param string $operator
-     * @param string|null $table_name
      * @return $this
      */
-    public function setCondition($column_name, $value, $operator = '=', $table_name = null) {
-        $this->condition_collection = new ConditionCollection(OPERATOR_AND, [new Condition($column_name, $value, $operator, $table_name)]);
+    public function setCondition($statement1, $statement2, $operator = '=') {
+        if (!($statement1 instanceof Statement))
+            throw new \InvalidArgumentException('Expected $statement1 to be Statement, got ' . Util::get_type($statement1));
+
+        if (!($statement2 instanceof Statement))
+            throw new \InvalidArgumentException('Expected $statement2 to be Statement, got ' . Util::get_type($statement2));
+
+        if (!is_string($operator))
+            throw new \InvalidArgumentException('Expected $operator to be string, got ' . Util::get_type($operator));
+
+        $this->condition_collection = new ConditionCollection(OPERATOR_AND, [new Condition($statement1, $statement2, $operator)]);
 
         return $this;
     }
@@ -72,13 +85,6 @@ class Join {
         $this->condition_collection = $condition_collection;
 
         return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTableName() {
-        return $this->table_name;
     }
 
     /**

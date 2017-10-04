@@ -38,9 +38,9 @@ class SelectQuery extends Query {
                 $params = array_merge($params, $built_statement->getParameters());
 
                 if ($statement->getAlias() !== null) {
-                    $statements[] = sprintf('%s AS %s', $built_statement->getQueryString(), $statement->getAlias());
+                    $statements[] = sprintf('%s AS %s', $built_statement->getString(), $statement->getAlias());
                 } else {
-                    $statements[] = $built_statement->getQueryString();
+                    $statements[] = $built_statement->getString();
                 }
             }
 
@@ -55,7 +55,7 @@ class SelectQuery extends Query {
 
         if ($this->group_by !== null) {
             $group_by_built = $this->group_by->build();
-            $query .= ' GROUP BY ' . $group_by_built->getQueryString();
+            $query .= ' GROUP BY ' . $group_by_built->getString();
             $params = array_merge($params, $group_by_built->getParameters());
         }
 

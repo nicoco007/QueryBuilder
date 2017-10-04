@@ -3,7 +3,7 @@
 namespace QueryBuilder;
 
 
-class BuiltCondition {
+class BuiltStatement {
     /** @var string */
     private $string;
 
@@ -11,7 +11,7 @@ class BuiltCondition {
     private $parameters;
 
     /**
-     * BuiltCondition constructor.
+     * BuiltQuery constructor.
      * @param string $string
      * @param mixed[] $parameters
      */
@@ -31,7 +31,7 @@ class BuiltCondition {
     }
 
     /**
-     * @return mixed
+     * @return mixed[]
      */
     public function getParameters() {
         return $this->parameters;

@@ -14,11 +14,20 @@ class ConditionCollection {
     private $children_collections;
 
     /**
-     * @param int $operator
+     * @param string $operator
      * @param Condition[] $conditions
      * @param ConditionCollection[] $children_collections
      */
     public function __construct($operator, $conditions = [], $children_collections = []) {
+        if (!is_string($operator))
+            throw new \InvalidArgumentException('Expected $operator to be string, got ' . Util::get_type($operator));
+
+        if (!Util::instanceof_array($conditions, Condition::class))
+            throw new \InvalidArgumentException('Expected $conditions to be array of Condition, got ' . Util::get_types_array($conditions));
+
+        if (!Util::instanceof_array($children_collections, ConditionCollection::class))
+            throw new \InvalidArgumentException('Expected $children_collections to be array of ConditionCollection, got ' . Util::get_types_array($children_collections));
+
         $this->operator = $operator;
         $this->conditions = $conditions;
         $this->children_collections = $children_collections;
@@ -33,7 +42,7 @@ class ConditionCollection {
 
         foreach ($this->conditions as $condition) {
             $built = $condition->build();
-            $conditions[] = $built->getQueryString();
+            $conditions[] = $built->getString();
             $parameters = array_merge($parameters, $built->getParameters());
         }
 
@@ -49,10 +58,6 @@ class ConditionCollection {
         return new BuiltQuery($query_string, $parameters);
     }
 
-    public function has_elements() {
-        return count($this->conditions) > 0 || count($this->children_collections) > 0;
-    }
-
     /**
      * @param Statement $statement1
      * @param Statement $statement2
@@ -60,9 +65,25 @@ class ConditionCollection {
      * @return $this
      */
     public function addCondition($statement1, $statement2, $operator = '=') {
-        $this->conditions[] = new ConditionCollection(OPERATOR_AND, [new Condition($statement1, $statement2, $operator)]);
+        if (!($statement1 instanceof Statement))
+            throw new \InvalidArgumentException('Expected $statement1 to be Statement, got ' . Util::get_type($statement1));
+
+        if (!($statement2 instanceof Statement))
+            throw new \InvalidArgumentException('Expected $statement2 to be Statement, got ' . Util::get_type($statement2));
+
+        if (!is_string($operator))
+            throw new \InvalidArgumentException('Expected $operator to be string, got ' . Util::get_type($operator));
+
+        $this->conditions[] = new Condition($statement1, $statement2, $operator);
 
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function has_elements() {
+        return count($this->conditions) > 0 || count($this->children_collections) > 0;
     }
 
     /**

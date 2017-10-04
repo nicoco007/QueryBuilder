@@ -18,30 +18,33 @@ class CaseStatement extends Statement {
 
     /**
      * @param Condition $condition
-     * @param Statement|string $value
+     * @param Statement|mixed $value
      * @return $this
      */
     public function addCase($condition, $value) {
-        $this->cases[] = new CaseStatementItem($condition, $value instanceof Statement ? $value : new StringStatement($value));
+        if (!($condition instanceof Condition))
+            throw new \InvalidArgumentException('Expected $condition to be Condition, got ' . Util::get_type($condition));
+
+        $this->cases[] = new CaseStatementItem($condition, $value instanceof Statement ? $value : new RawStatement($value));
 
         return $this;
     }
 
     /**
-     * @param Condition $statement
+     * @param Statement|mixed $statement
      * @return $this
      */
     public function setElseValue($statement) {
         if ($statement instanceof Statement)
             $this->else_value = $statement;
         else
-            $this->else_value = new StringStatement($statement);
+            $this->else_value = new RawStatement($statement);
 
         return $this;
     }
 
     /**
-     * @return BuiltQuery
+     * @return BuiltStatement
      */
     public function build() {
         if (count($this->cases) == 0)
@@ -56,9 +59,9 @@ class CaseStatement extends Statement {
 
             $params = array_merge($params, $built_condition->getParameters(), $built_value->getParameters());
 
-            return sprintf('WHEN %s THEN %s', $built_condition->getQueryString(), $case->getValue()->build()->getQueryString());
+            return sprintf('WHEN %s THEN %s', $built_condition->getString(), $case->getValue()->build()->getString());
         }, $this->cases);
 
-        return new BuiltQuery(sprintf('CASE %s END', implode(', ', $statements)), $params);
+        return new BuiltStatement(sprintf('CASE %s END', implode(', ', $statements)), $params);
     }
 }

@@ -21,10 +21,10 @@ class RawStatement extends Statement {
     }
 
     /**
-     * @return BuiltQuery
+     * @return BuiltStatement
      */
     public function build() {
-        return new BuiltQuery('?', [$this->value]);
+        return new BuiltStatement('?', [$this->value]);
     }
 
     /**

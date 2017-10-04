@@ -16,6 +16,9 @@ class BuiltQuery {
      * @param mixed[] $parameters
      */
     public function __construct($query_string, $parameters) {
+        if (!is_string($query_string))
+            throw new \InvalidArgumentException('Expected $string to be string, got ' . Util::get_type($query_string));
+
         $this->query_string = $query_string;
         $this->parameters = $parameters;
     }
