@@ -3,7 +3,7 @@
 namespace QueryBuilder;
 
 
-class BuiltQuery {
+class BuiltQuery extends Built {
     /** @var string */
     private $query_string;
 
@@ -26,7 +26,7 @@ class BuiltQuery {
     /**
      * @return string
      */
-    public function getQueryString() {
+    public function getString() {
         return $this->query_string;
     }
 

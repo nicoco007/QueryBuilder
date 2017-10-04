@@ -3,7 +3,7 @@
 namespace QueryBuilder;
 
 
-class BuiltStatement {
+class BuiltStatement extends Built {
     /** @var string */
     private $string;
 
