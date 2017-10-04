@@ -2,7 +2,6 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use QueryBuilder\BuiltQuery;
 use QueryBuilder\SelectQuery;
 use QueryBuilder\ConditionCollection;
 use QueryBuilder\Condition;
@@ -12,9 +11,7 @@ use QueryBuilder\CaseStatement;
 use QueryBuilder\ColumnStatement;
 use QueryBuilder\RawStatement;
 
-use PHPUnit\Framework\TestCase;
-
-final class SelectQueryTest extends TestCase {
+final class SelectQueryTest extends QueryBuilderTest {
 
     public function testSimpleQuery() {
         $built = (new SelectQuery('users'))->build();
@@ -90,12 +87,5 @@ final class SelectQueryTest extends TestCase {
         $this->assertEquals([1286, 2, 3], $built->getParameters());
 
         $this->printResults($built);
-    }
-
-    /**
-     * @param BuiltQuery $built
-     */
-    public function printResults($built) {
-        printf("Query: %s\nParameters: [%s]\n\n", $built->getString(), implode(', ', $built->getParameters()));
     }
 }

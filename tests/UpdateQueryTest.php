@@ -1,32 +1,17 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Nicolas
- * Date: 2017-10-04
- * Time: 13:38
- */
-
-use PHPUnit\Framework\TestCase;
 
 use QueryBuilder\ColumnStatement;
 use QueryBuilder\RawStatement;
 use QueryBuilder\UpdateQuery;
 
-class UpdateQueryTest extends TestCase {
+class UpdateQueryTest extends QueryBuilderTest {
     public function testSimpleQuery() {
         $built = (new UpdateQuery('users'))
-            ->addAssignment(new ColumnStatement('email'), new RawStatement('blé'))
+            ->addAssignment(new ColumnStatement('email'), new RawStatement('blah'))
             ->build();
 
-        $this->assertTrue(true);
+        $this->markTestIncomplete();
 
         $this->printResults($built);
-    }
-
-    /**
-     * @param QueryBuilder\BuiltQuery $built
-     */
-    public function printResults($built) {
-        printf("Query: %s\nParameters: %s\n\n", $built->getString(), json_encode($built->getParameters(), JSON_UNESCAPED_UNICODE));
     }
 }

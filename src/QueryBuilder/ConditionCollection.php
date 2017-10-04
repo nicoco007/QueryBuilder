@@ -48,7 +48,7 @@ class ConditionCollection {
 
         $children = array_map(function($child) {
             /** @var ConditionCollection $child */
-            return '(' . $child->build()->getQueryString() . ')';
+            return '(' . $child->build()->getString() . ')';
         }, $this->children_collections);
 
         $array = array_merge($conditions, $children);
