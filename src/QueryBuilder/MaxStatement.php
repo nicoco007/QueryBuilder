@@ -17,6 +17,9 @@ class MaxStatement extends Statement {
      * @param Statement $statement
      */
     public function __construct($statement) {
+        if (!($statement instanceof Statement))
+            throw new \InvalidArgumentException('Expected $statement to be Statement, got '. Util::get_type($statement));
+
         $this->statement = $statement;
     }
 

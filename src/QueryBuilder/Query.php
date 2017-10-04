@@ -23,6 +23,12 @@ abstract class Query {
      * @param string|null $alias
      */
     public function __construct($table_name, $alias = null) {
+        if (!is_string($table_name))
+            throw new \InvalidArgumentException('Expected $table_name to be string, got ' . Util::get_type($table_name));
+
+        if ($alias !== null && !is_string($alias))
+            throw new \InvalidArgumentException('Expected $alias to be string or null, got ' . Util::get_type($alias));
+
         $this->table_name = $table_name;
         $this->alias = $alias;
     }
@@ -34,6 +40,15 @@ abstract class Query {
      * @return $this
      */
     public function setCondition($statement1, $statement2, $operator = '=') {
+        if (!($statement1 instanceof Statement))
+            throw new \InvalidArgumentException('Expected $statement1 to be Statement, got ' . Util::get_type($statement1));
+
+        if (!($statement2 instanceof Statement))
+            throw new \InvalidArgumentException('Expected $statement2 to be Statement, got ' . Util::get_type($statement2));
+
+        if (!is_string($operator))
+            throw new \InvalidArgumentException('Expected $operator to be string, got ' . Util::get_type($operator));
+
         $this->condition_collection = new ConditionCollection(OPERATOR_AND, [new Condition($statement1, $statement2, $operator)]);
 
         return $this;
@@ -44,6 +59,9 @@ abstract class Query {
      * @return $this
      */
     public function setConditionCollection($condition_collection) {
+        if (!($condition_collection instanceof ConditionCollection))
+            throw new \InvalidArgumentException('Expected $condition_collection to be ConditionCollection, got ' . Util::get_type($condition_collection));
+
         $this->condition_collection = $condition_collection;
 
         return $this;
