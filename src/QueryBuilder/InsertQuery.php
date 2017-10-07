@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Nicolas
- * Date: 2017-10-07
- * Time: 16:37
- */
 
 namespace QueryBuilder;
 
@@ -117,10 +111,14 @@ class InsertQuery extends Query {
 
         $builder->append(' INTO `%s`', $this->table_name);
 
+        // TODO: PARTITION
+
         foreach ($this->assignments as $assignment) {
             $builder->append(' SET ');
             $builder->appendStatement($assignment->build());
         }
+
+        // TODO: ON DUPLICATE KEY UPDATE
 
         return $builder->toBuiltQuery();
     }

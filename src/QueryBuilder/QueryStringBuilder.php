@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Nicolas
- * Date: 2017-10-07
- * Time: 16:46
- */
 
 namespace QueryBuilder;
 
