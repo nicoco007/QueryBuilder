@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/QueryBuilderTest.php';
 
 use QueryBuilder\SelectQuery;
 use QueryBuilder\ConditionCollection;
@@ -9,7 +9,7 @@ use QueryBuilder\Join;
 use QueryBuilder\MaxStatement;
 use QueryBuilder\CaseStatement;
 use QueryBuilder\ColumnStatement;
-use QueryBuilder\RawStatement;
+use QueryBuilder\RawValueStatement;
 
 final class SelectQueryTest extends QueryBuilderTest {
 
@@ -35,27 +35,27 @@ final class SelectQueryTest extends QueryBuilderTest {
     public function testQueryWithCondition() {
         $built = (new SelectQuery('users'))
             ->addStatement(new ColumnStatement('username'))
-            ->setCondition(new ColumnStatement('id'), new RawStatement(532))
+            ->setCondition(new ColumnStatement('account_type'), new RawValueStatement('user'))
             ->build();
 
-        $this->assertEquals("SELECT `username` FROM `users` WHERE `id` = ?", $built->getString());
-        $this->assertEquals([532], $built->getParameters());
+        $this->assertEquals("SELECT `username` FROM `users` WHERE `account_type` = ?", $built->getString());
+        $this->assertEquals(['user'], $built->getParameters());
 
         $this->printResults($built);
     }
 
     public function testQueryWithConditions() {
         $condition_collection = (new ConditionCollection(OPERATOR_AND))
-            ->addCondition(new ColumnStatement('id'), new RawStatement(532))
-            ->addCondition(new ColumnStatement('confirmed'), new RawStatement(true));
+            ->addCondition(new ColumnStatement('account_type'), new RawValueStatement('user'))
+            ->addCondition(new ColumnStatement('confirmed'), new RawValueStatement(true));
 
         $built = (new SelectQuery('users'))
             ->addStatement(new ColumnStatement('username'))
             ->setConditionCollection($condition_collection)
             ->build();
 
-        $this->assertEquals("SELECT `username` FROM `users` WHERE `id` = ? AND `confirmed` = ?", $built->getString());
-        $this->assertEquals([532, true], $built->getParameters());
+        $this->assertEquals("SELECT `username` FROM `users` WHERE `account_type` = ? AND `confirmed` = ?", $built->getString());
+        $this->assertEquals(['user', true], $built->getParameters());
 
         $this->printResults($built);
     }
@@ -63,9 +63,9 @@ final class SelectQueryTest extends QueryBuilderTest {
     public function testQueryWithComplexJoin() {
         $query = (new SelectQuery('forms_submissions_data'))
             ->addStatement(new ColumnStatement('submission_id'))
-            ->addStatement(new MaxStatement((new CaseStatement())->addCase(new Condition(new ColumnStatement('key'), new RawStatement(1286)), new ColumnStatement('value'))), 'camper_first_name')
-            ->addStatement(new MaxStatement((new CaseStatement())->addCase(new Condition(new ColumnStatement('key'), new RawStatement(2)), new ColumnStatement('value'))), 'camper_last_name')
-            ->addStatement(new MaxStatement((new CaseStatement())->addCase(new Condition(new ColumnStatement('key'), new RawStatement(3)), new ColumnStatement('value'))), 'camper_dob')
+            ->addStatement(new MaxStatement((new CaseStatement())->addCase(new Condition(new ColumnStatement('key'), new RawValueStatement(1286)), new ColumnStatement('value'))), 'camper_first_name')
+            ->addStatement(new MaxStatement((new CaseStatement())->addCase(new Condition(new ColumnStatement('key'), new RawValueStatement(2)), new ColumnStatement('value'))), 'camper_last_name')
+            ->addStatement(new MaxStatement((new CaseStatement())->addCase(new Condition(new ColumnStatement('key'), new RawValueStatement(3)), new ColumnStatement('value'))), 'camper_dob')
             ->setGroupBy(new ColumnStatement('submission_id'));
 
         $join = (new Join($query, 'c'))

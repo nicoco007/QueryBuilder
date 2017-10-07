@@ -3,7 +3,7 @@
 namespace QueryBuilder;
 
 
-class RawStatement extends Statement {
+class RawValueStatement extends Statement {
     /** @var mixed */
     private $value;
 
