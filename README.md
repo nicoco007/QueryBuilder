@@ -1,2 +1,2 @@
 # QueryBuilder
-A PDO query builder & wrapper.
+A PDO wrapper & query builder.
