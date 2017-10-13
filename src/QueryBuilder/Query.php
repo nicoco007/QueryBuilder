@@ -15,17 +15,25 @@ abstract class Query implements Buildable {
 
     /**
      * @param string $table_name
-     * @param string|null $alias
      */
-    public function __construct($table_name, $alias = null) {
+    public function __construct($table_name) {
         if (!is_string($table_name))
             throw new \InvalidArgumentException('Expected $table_name to be string, got ' . Util::get_type($table_name));
 
-        if ($alias !== null && !is_string($alias))
+        $this->table_name = $table_name;
+    }
+
+    /**
+     * @param string $alias
+     * @return $this
+     */
+    public function setAlias($alias) {
+        if (!is_string($alias))
             throw new \InvalidArgumentException('Expected $alias to be string or null, got ' . Util::get_type($alias));
 
-        $this->table_name = $table_name;
         $this->alias = $alias;
+
+        return $this;
     }
 
     /**
