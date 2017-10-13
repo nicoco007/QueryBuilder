@@ -1,7 +1,7 @@
 {
     "name": "nicoco007/querybuilder",
     "description": "PDO Query Wrapper",
-    "keywords": ["template", "composer", "package"],
+    "keywords": ["pdo", "mysql"],
     "license": "AGPL-3.0",
     "authors": [
         {
@@ -9,7 +9,7 @@
             "email": "nicolas@gnyra.com"
         }
     ],
-    "type": "project",
+    "type": "library",
     "require": {
 		"php": ">=5.4"
     },
