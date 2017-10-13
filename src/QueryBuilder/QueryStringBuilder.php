@@ -36,15 +36,43 @@ class QueryStringBuilder {
     }
 
     /**
-     * @param Built $built
+     * @param Buildable $buildable
      */
-    public function appendStatement($built) {
-        if (!($built instanceof Built))
-            throw new \InvalidArgumentException('Expected $built to be Built, got ' . Util::get_type($built));
+    public function appendBuildable($buildable) {
+        if (!($buildable instanceof Buildable))
+            throw new \InvalidArgumentException('Expected $buildable to be Buildable, got ' . Util::get_type($buildable));
+
+        $built = $buildable->build();
 
         $this->query_string .= $built->getString();
 
-        $this->parameters = array_merge($this->parameters, $built->getParameters());
+        $this->appendParameters($built->getParameters());
+    }
+
+    /**
+     * @param Buildable[] $buildables
+     * @param string $glue
+     */
+    public function appendBuildableCollection($buildables, $glue = ', ') {
+        if (!Util::instanceof_array($buildables, Buildable::class))
+            throw new \InvalidArgumentException('Expected $buildables to be array of Buildable, got ' . Util::get_types_array($buildables));
+
+        $strings = [];
+
+        foreach ($buildables as $buildable) {
+            $built = $buildable->build();
+            $strings[] = $built->getString();
+            $this->appendParameters($built->getParameters());
+        }
+
+        $this->query_string .= implode($glue, $strings);
+    }
+
+    /**
+     * @param mixed[] $parameters
+     */
+    public function appendParameters($parameters) {
+        $this->parameters = array_merge($this->parameters, $parameters);
     }
 
     /**

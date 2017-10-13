@@ -3,7 +3,7 @@
 namespace QueryBuilder;
 
 
-class Assignment {
+class Assignment implements Buildable {
     /** @var ColumnStatement */
     private $column;
 

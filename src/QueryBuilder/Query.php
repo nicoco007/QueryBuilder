@@ -3,7 +3,7 @@
 namespace QueryBuilder;
 
 
-abstract class Query {
+abstract class Query implements Buildable {
     /** @var string */
     protected $table_name;
 
@@ -12,11 +12,6 @@ abstract class Query {
 
     /** @var ConditionCollection */
     protected $condition_collection;
-
-    /**
-     * @return BuiltQuery
-     */
-    public abstract function build();
 
     /**
      * @param string $table_name

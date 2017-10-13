@@ -4,10 +4,10 @@ namespace QueryBuilder;
 
 
 class SelectQuery extends Query {
-    /** @var OrderByCollection */
+    /** @var OrderByColumn[] */
     private $order_by;
 
-    /** @var SelectExpressionCollection */
+    /** @var SelectExpression[] */
     private $expressions;
 
     /** @var Join[] */
@@ -28,8 +28,6 @@ class SelectQuery extends Query {
             throw new \InvalidArgumentException('Expected $alias to be string or null, got ' . Util::get_type($alias));
 
         parent::__construct($table_name, $alias);
-
-        $this->expressions = new SelectExpressionCollection();
     }
 
     public function build() {
@@ -37,7 +35,7 @@ class SelectQuery extends Query {
 
         // check if we have columns
         if (count($this->expressions) > 0) {
-            $builder->appendStatement($this->expressions->build());
+            $builder->appendBuildableCollection($this->expressions);
         } else {
             // use wildcard if no columns are specified
             $builder->append('*');
@@ -48,7 +46,7 @@ class SelectQuery extends Query {
 
         if ($this->group_by !== null) {
             $builder->append(' GROUP BY ');
-            $builder->appendStatement($this->group_by->build());
+            $builder->appendBuildable($this->group_by);
         }
 
         if ($this->alias !== null)
@@ -57,19 +55,19 @@ class SelectQuery extends Query {
         if ($this->joins !== null && count($this->joins) > 0) {
             foreach ($this->joins as $join) {
                 $builder->append(' JOIN ');
-                $builder->appendStatement($join->build());
+                $builder->appendBuildable($join);
             }
         }
 
         // add where statement
         if ($this->condition_collection !== null && $this->condition_collection->has_elements()) {
             $builder->append(' WHERE ');
-            $builder->appendStatement($this->condition_collection->build());
+            $builder->appendBuildable($this->condition_collection);
         }
 
         if (count($this->order_by) > 0) {
             $builder->append(' ORDER BY ');
-            $builder->appendStatement($this->order_by->build());
+            $builder->appendBuildableCollection($this->order_by);
         }
 
         return $builder->toBuiltQuery();
@@ -87,7 +85,7 @@ class SelectQuery extends Query {
         if ($alias !== null && !is_string($alias))
             throw new \InvalidArgumentException('Expected $alias to be string or null, got ' . Util::get_type($alias));
 
-        $this->expressions->addExpression($statement, $alias);
+        $this->expressions[] = new SelectExpression($statement, $alias);
 
         return $this;
     }
@@ -108,7 +106,7 @@ class SelectQuery extends Query {
         if ($table_name !== null && !is_string($table_name))
             throw new \InvalidArgumentException('Expected $table_name to be string or null, got ' . Util::get_type($table_name));
 
-        $this->order_by->addOrder($column_name, $direction, $table_name);
+        $this->order_by[] = new OrderByColumn($column_name, $direction, $table_name);
 
         return $this;
     }

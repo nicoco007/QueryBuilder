@@ -3,7 +3,7 @@
 namespace QueryBuilder;
 
 
-abstract class Built {
-    abstract function getString();
-    abstract function getParameters();
+interface Built {
+    public function getString();
+    public function getParameters();
 }

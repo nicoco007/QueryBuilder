@@ -3,7 +3,7 @@
 namespace QueryBuilder;
 
 
-class BuiltQuery extends Built {
+class BuiltQuery implements Built {
     /** @var string */
     private $query_string;
 

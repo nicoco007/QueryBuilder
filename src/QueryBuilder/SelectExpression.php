@@ -2,7 +2,7 @@
 
 namespace QueryBuilder;
 
-class SelectExpression {
+class SelectExpression implements Buildable {
     /** @var Statement */
     private $statement;
 

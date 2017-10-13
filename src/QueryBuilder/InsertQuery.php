@@ -115,7 +115,7 @@ class InsertQuery extends Query {
 
         foreach ($this->assignments as $assignment) {
             $builder->append(' SET ');
-            $builder->appendStatement($assignment->build());
+            $builder->appendBuildable($assignment);
         }
 
         // TODO: ON DUPLICATE KEY UPDATE

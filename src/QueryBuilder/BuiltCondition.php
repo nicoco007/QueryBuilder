@@ -3,7 +3,7 @@
 namespace QueryBuilder;
 
 
-class BuiltCondition extends Built {
+class BuiltCondition implements Built {
     /** @var string */
     private $string;
 

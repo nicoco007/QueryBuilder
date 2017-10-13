@@ -19,7 +19,7 @@ class CaseStatement extends Statement {
         if (!($condition instanceof Condition))
             throw new \InvalidArgumentException('Expected $condition to be Condition, got ' . Util::get_type($condition));
 
-        $this->cases[] = new CaseStatementItem($condition, $value instanceof Statement ? $value : new RawStatement($value));
+        $this->cases[] = new CaseStatementItem($condition, $value instanceof Statement ? $value : new RawValueStatement($value));
 
         return $this;
     }

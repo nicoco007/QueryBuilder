@@ -3,7 +3,7 @@
 namespace QueryBuilder;
 
 
-class ConditionCollection {
+class ConditionCollection implements Buildable {
     /** @var int */
     private $operator;
 

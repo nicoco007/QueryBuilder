@@ -3,7 +3,7 @@
 namespace QueryBuilder;
 
 
-class Join {
+class Join implements Buildable {
     /** @var Statement|SelectQuery */
     private $query;
 

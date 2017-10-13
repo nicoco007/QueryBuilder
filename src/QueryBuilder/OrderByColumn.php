@@ -3,7 +3,7 @@
 namespace QueryBuilder;
 
 
-class OrderByColumn {
+class OrderByColumn implements Buildable {
     /** @var string */
     private $column_name;
 

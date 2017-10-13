@@ -3,7 +3,7 @@
 namespace QueryBuilder;
 
 
-class Condition {
+class Condition implements Buildable {
     /** @var Statement */
     private $statement1;
 

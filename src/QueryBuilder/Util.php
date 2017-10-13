@@ -16,7 +16,7 @@ class Util {
     }
 
     /**
-     * @param object[] $array
+     * @param array $array
      * @param string|string[] $classes
      * @return bool
      */
@@ -39,7 +39,7 @@ class Util {
     }
 
     /**
-     * @param mixed[] $array
+     * @param array $array
      * @return string
      */
     public static function get_types_array($array) {

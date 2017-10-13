@@ -3,7 +3,7 @@
 namespace QueryBuilder;
 
 
-abstract class Statement {
+abstract class Statement implements Buildable {
     /**
      * @return BuiltStatement
      */

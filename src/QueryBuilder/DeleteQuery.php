@@ -16,16 +16,14 @@ class DeleteQuery extends Query {
     /** @var ConditionCollection */
     protected $condition_collection;
 
-    /** @var OrderByCollection */
-    private $order_by;
+    /** @var OrderByColumn[] */
+    private $order_by = [];
 
     /** @var int */
     private $limit;
 
     public function __construct($table_name) {
         parent::__construct($table_name);
-
-        $this->order_by = new OrderByCollection();
     }
 
     /**
@@ -109,7 +107,7 @@ class DeleteQuery extends Query {
         if ($table_name !== null && !is_string($table_name))
             throw new \InvalidArgumentException('Expected $table_name to be string or null, got ' . Util::get_type($table_name));
 
-        $this->order_by->addOrder($column_name, $direction, $table_name);
+        $this->order_by[] = new OrderByColumn($column_name, $direction, $table_name);
 
         return $this;
     }
@@ -133,12 +131,12 @@ class DeleteQuery extends Query {
 
         if ($this->condition_collection !== null) {
             $builder->append(' WHERE ');
-            $builder->appendStatement($this->condition_collection->build());
+            $builder->appendBuildable($this->condition_collection);
         }
 
         if (count($this->order_by) > 0) {
             $builder->append(' ORDER BY ');
-            $builder->appendStatement($this->order_by->build());
+            $builder->appendBuildableCollection($this->order_by);
         }
 
         if ($this->limit > 0) {
