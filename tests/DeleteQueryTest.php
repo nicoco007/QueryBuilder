@@ -10,12 +10,9 @@ use QueryBuilder\RawValueStatement;
 final class DeleteQueryTest extends QueryBuilderTest {
     public function testSimpleQuery() {
         $built = (new DeleteQuery('users'))
-            ->addOrder('confirmed')
-            ->addOrder('username', ORDER_DESC)
-            ->setLimit(10)
             ->build();
 
-        $this->assertEquals("DELETE FROM `users` ORDER BY `confirmed` ASC, `username` DESC LIMIT 10", $built->getString());
+        $this->assertEquals("DELETE FROM `users`", $built->getString());
         $this->assertEquals([], $built->getParameters());
 
         $this->printResults($built);
