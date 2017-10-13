@@ -83,6 +83,16 @@ class ConditionCollection implements Buildable {
     }
 
     /**
+     * @param ConditionCollection $condition_collection
+     */
+    public function addChild($condition_collection) {
+        if (!($condition_collection instanceof ConditionCollection))
+            throw new \InvalidArgumentException('Expected $condition_collection to be ConditionCollection, got ' . Util::get_type($condition_collection));
+
+        $this->children_collections[] = $condition_collection;
+    }
+
+    /**
      * @return int
      */
     public function getOperator() {

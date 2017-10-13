@@ -7,6 +7,7 @@ class Join implements Buildable {
     /** @var Statement|SelectQuery */
     private $query;
 
+    // TODO: query and join can have an alias, find a way to fix this
     /** @var string */
     private $alias;
 

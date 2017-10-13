@@ -77,7 +77,8 @@ final class SelectQueryTest extends QueryBuilderTest {
         $join3 = (new Join(new ColumnStatement('locations'), 'l'))
             ->setCondition(new ColumnStatement('id', 'l'), new ColumnStatement('location_id', 'r'));
 
-        $built = (new SelectQuery('registrations', 'r'))
+        $built = (new SelectQuery('registrations'))
+            ->setAlias('r')
             ->addJoin($join)
             ->addJoin($join2)
             ->addJoin($join3)
