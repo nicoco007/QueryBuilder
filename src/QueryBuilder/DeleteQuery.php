@@ -33,6 +33,9 @@ class DeleteQuery extends Query {
      * @return $this
      */
     public function setLowPriority($low_priority) {
+        if (!is_bool($low_priority))
+            throw new \InvalidArgumentException('Expected $low_priority to be bool, got ' . Util::get_type($low_priority));
+
         $this->low_priority = $low_priority;
 
         return $this;
@@ -43,6 +46,9 @@ class DeleteQuery extends Query {
      * @return $this
      */
     public function setQuick($quick) {
+        if (!is_bool($quick))
+            throw new \InvalidArgumentException('Expected $quick to be bool, got ' . Util::get_type($quick));
+
         $this->quick = $quick;
 
         return $this;
@@ -53,6 +59,9 @@ class DeleteQuery extends Query {
      * @return $this
      */
     public function setIgnore($ignore) {
+        if (!is_bool($ignore))
+            throw new \InvalidArgumentException('Expected $ignore to be bool, got ' . Util::get_type($ignore));
+
         $this->ignore = $ignore;
 
         return $this;
@@ -63,6 +72,9 @@ class DeleteQuery extends Query {
      * @return $this
      */
     public function setConditionCollection($condition_collection) {
+        if (!($condition_collection instanceof ConditionCollection))
+            throw new \InvalidArgumentException('Expected $condition_collection to be ConditionCollection, got ' . Util::get_type($condition_collection));
+
         $this->condition_collection = $condition_collection;
 
         return $this;
@@ -73,6 +85,9 @@ class DeleteQuery extends Query {
      * @return $this
      */
     public function setLimit($limit) {
+        if (!is_int($limit))
+            throw new \InvalidArgumentException('Expected $limit to be int, got ' . Util::get_type($limit));
+
         $this->limit = $limit;
 
         return $this;
@@ -85,6 +100,15 @@ class DeleteQuery extends Query {
      * @return $this
      */
     public function addOrder($column_name, $direction = ORDER_ASC, $table_name = null) {
+        if (!is_string($column_name))
+            throw new \InvalidArgumentException('Expected $column_name to be string, got ' . Util::get_type($column_name));
+
+        if (!is_int($direction))
+            throw new \InvalidArgumentException('Expected $direction to be int, got ' . Util::get_type($direction));
+
+        if ($table_name !== null && !is_string($table_name))
+            throw new \InvalidArgumentException('Expected $table_name to be string or null, got ' . Util::get_type($table_name));
+
         $this->order_by->addOrder($column_name, $direction, $table_name);
 
         return $this;
