@@ -47,8 +47,18 @@ class QueryStringBuilder {
         $this->parameters = array_merge($this->parameters, $built->getParameters());
     }
 
+    /**
+     * @return BuiltQuery
+     */
     public function toBuiltQuery() {
         return new BuiltQuery($this->query_string, $this->parameters);
+    }
+
+    /**
+     * @return BuiltStatement
+     */
+    public function toBuiltStatement() {
+        return new BuiltStatement($this->query_string, $this->parameters);
     }
 
     /**

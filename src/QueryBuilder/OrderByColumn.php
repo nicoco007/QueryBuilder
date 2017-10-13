@@ -33,6 +33,11 @@ class OrderByColumn {
         $this->table_name = $table_name;
     }
 
+    public function build() {
+        $column = (new ColumnStatement($this->column_name, $this->table_name))->build();
+        return new BuiltStatement(sprintf('%s %s', $column->getString(), $this->direction === ORDER_ASC ? 'ASC' : 'DESC'), []);
+    }
+
     /**
      * @return string
      */
