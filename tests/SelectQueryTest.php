@@ -45,17 +45,22 @@ final class SelectQueryTest extends QueryBuilderTest {
     }
 
     public function testQueryWithConditions() {
+        $conditions = (new ConditionCollection(OPERATOR_OR))
+            ->addCondition(new ColumnStatement('account_type'), new RawValueStatement('user'))
+            ->addCondition(new ColumnStatement('account_type'), new RawValueStatement('admin'));
+
         $condition_collection = (new ConditionCollection(OPERATOR_AND))
             ->addCondition(new ColumnStatement('account_type'), new RawValueStatement('user'))
-            ->addCondition(new ColumnStatement('confirmed'), new RawValueStatement(true));
+            ->addCondition(new ColumnStatement('confirmed'), new RawValueStatement(true))
+            ->addChild($conditions);
 
         $built = (new SelectQuery('users'))
             ->addStatement(new ColumnStatement('username'))
             ->setConditionCollection($condition_collection)
             ->build();
 
-        $this->assertEquals("SELECT `username` FROM `users` WHERE `account_type` = ? AND `confirmed` = ?", $built->getString());
-        $this->assertEquals(['user', true], $built->getParameters());
+        $this->assertEquals("SELECT `username` FROM `users` WHERE `account_type` = ? AND `confirmed` = ? AND (`account_type` = ? OR `account_type` = ?)", $built->getString());
+        $this->assertEquals(['user', true, 'user', 'admin'], $built->getParameters());
 
         $this->printResults($built);
     }

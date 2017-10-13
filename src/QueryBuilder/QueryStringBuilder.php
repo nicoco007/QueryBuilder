@@ -52,8 +52,10 @@ class QueryStringBuilder {
     /**
      * @param Buildable[] $buildables
      * @param string $glue
+     * @param string $prefix
+     * @param string $suffix
      */
-    public function appendBuildableCollection($buildables, $glue = ', ') {
+    public function appendBuildableCollection($buildables, $glue = ', ', $prefix = '', $suffix = '') {
         if (!Util::instanceof_array($buildables, Buildable::class))
             throw new \InvalidArgumentException('Expected $buildables to be array of Buildable, got ' . Util::get_types_array($buildables));
 
@@ -61,7 +63,7 @@ class QueryStringBuilder {
 
         foreach ($buildables as $buildable) {
             $built = $buildable->build();
-            $strings[] = $built->getString();
+            $strings[] = $prefix . $built->getString() . $suffix;
             $this->appendParameters($built->getParameters());
         }
 

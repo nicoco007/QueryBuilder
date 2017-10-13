@@ -40,25 +40,16 @@ class ConditionCollection implements Buildable {
         if (count($this->conditions) == 0 && count($this->children_collections) == 0)
             throw new \InvalidArgumentException('Condition collection must have at least one Condition or child ConditionCollection');
 
-        $conditions = [];
-        $parameters = [];
+        $builder = new QueryStringBuilder();
 
-        foreach ($this->conditions as $condition) {
-            $built = $condition->build();
-            $conditions[] = $built->getString();
-            $parameters = array_merge($parameters, $built->getParameters());
-        }
+        $builder->appendBuildableCollection($this->conditions, sprintf(' %s ', $this->operator));
 
-        $children = array_map(function($child) {
-            /** @var ConditionCollection $child */
-            return '(' . $child->build()->getString() . ')';
-        }, $this->children_collections);
+        if (count($this->conditions) > 0 && count($this->children_collections) > 0)
+            $builder->append(sprintf(' %s ', $this->operator));
 
-        $array = array_merge($conditions, $children);
+        $builder->appendBuildableCollection($this->children_collections, sprintf(' %s ', $this->operator), '(', ')');
 
-        $query_string = implode(' ' . $this->operator . ' ', $array);
-
-        return new BuiltQuery($query_string, $parameters);
+        return $builder->toBuiltQuery();
     }
 
     /**
@@ -84,12 +75,15 @@ class ConditionCollection implements Buildable {
 
     /**
      * @param ConditionCollection $condition_collection
+     * @return $this
      */
     public function addChild($condition_collection) {
         if (!($condition_collection instanceof ConditionCollection))
             throw new \InvalidArgumentException('Expected $condition_collection to be ConditionCollection, got ' . Util::get_type($condition_collection));
 
         $this->children_collections[] = $condition_collection;
+
+        return $this;
     }
 
     /**
