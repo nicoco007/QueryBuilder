@@ -8,10 +8,10 @@ class ConditionCollection implements Buildable {
     private $operator;
 
     /** @var Condition[] */
-    private $conditions;
+    private $conditions = [];
 
     /** @var ConditionCollection[] */
-    private $children_collections;
+    private $children_collections = [];
 
     /**
      * @param string $operator
@@ -37,6 +37,9 @@ class ConditionCollection implements Buildable {
      * @return BuiltQuery
      */
     public function build() {
+        if (count($this->conditions) == 0 && count($this->children_collections) == 0)
+            throw new \InvalidArgumentException('Condition collection must have at least one Condition or child ConditionCollection');
+
         $conditions = [];
         $parameters = [];
 
@@ -80,13 +83,6 @@ class ConditionCollection implements Buildable {
     }
 
     /**
-     * @return bool
-     */
-    public function has_elements() {
-        return count($this->conditions) > 0 || count($this->children_collections) > 0;
-    }
-
-    /**
      * @return int
      */
     public function getOperator() {
@@ -98,5 +94,12 @@ class ConditionCollection implements Buildable {
      */
     public function getConditions() {
         return $this->conditions;
+    }
+
+    /**
+     * @return ConditionCollection[]
+     */
+    public function getChildrenCollections() {
+        return $this->children_collections;
     }
 }

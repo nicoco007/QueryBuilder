@@ -60,7 +60,7 @@ class SelectQuery extends Query {
         }
 
         // add where statement
-        if ($this->condition_collection !== null && $this->condition_collection->has_elements()) {
+        if ($this->condition_collection !== null) {
             $builder->append(' WHERE ');
             $builder->appendBuildable($this->condition_collection);
         }

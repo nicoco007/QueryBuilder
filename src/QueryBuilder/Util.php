@@ -5,6 +5,7 @@ namespace QueryBuilder;
 
 class Util {
     /**
+     * Get the class (if it's an object) or the type of the specified variable.
      * @param mixed $var
      * @return string
      */
@@ -16,6 +17,7 @@ class Util {
     }
 
     /**
+     * Check if the array elements are instances of the specified class(es).
      * @param array $array
      * @param string|string[] $classes
      * @return bool
@@ -39,6 +41,7 @@ class Util {
     }
 
     /**
+     * Get all classes of the elements in an array.
      * @param array $array
      * @return string
      */

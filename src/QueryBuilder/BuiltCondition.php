@@ -19,6 +19,9 @@ class BuiltCondition implements Built {
         if (!is_string($string))
             throw new \InvalidArgumentException('Expected $string to be string, got ' . Util::get_type($string));
 
+        if (!is_array($parameters))
+            throw new \InvalidArgumentException('Expected $parameters to be array, got ' . Util::get_type($string));
+
         $this->string = $string;
         $this->parameters = $parameters;
     }

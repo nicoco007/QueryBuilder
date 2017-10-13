@@ -3,6 +3,4 @@
 namespace QueryBuilder;
 
 
-class UnsafeUpdateException extends \Exception {
-
-}
+class UnsafeUpdateException extends \Exception { }

@@ -19,6 +19,9 @@ class BuiltQuery implements Built {
         if (!is_string($query_string))
             throw new \InvalidArgumentException('Expected $query_string to be string, got ' . Util::get_type($query_string));
 
+        if (!is_array($parameters))
+            throw new \InvalidArgumentException('Expected $parameters to be array, got ' . Util::get_type($string));
+
         $this->query_string = $query_string;
         $this->parameters = $parameters;
     }

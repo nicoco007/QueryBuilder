@@ -2,6 +2,4 @@
 
 namespace QueryBuilder;
 
-class InvalidQueryException extends \Exception {
-
-}
+class InvalidQueryException extends \Exception { }
