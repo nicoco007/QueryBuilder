@@ -10,6 +10,7 @@ use QueryBuilder\MaxStatement;
 use QueryBuilder\CaseStatement;
 use QueryBuilder\ColumnStatement;
 use QueryBuilder\RawValueStatement;
+use QueryBuilder\TableReference;
 
 final class SelectQueryTest extends QueryBuilderTest {
 
@@ -76,10 +77,10 @@ final class SelectQueryTest extends QueryBuilderTest {
         $join = (new Join($query, 'c'))
             ->setCondition(new ColumnStatement('submission_id'), new ColumnStatement('camper_id', 'r'));
 
-        $join2 = (new Join(new ColumnStatement('programs'), 'p'))
+        $join2 = (new Join(new TableReference('programs'), 'p'))
             ->setCondition(new ColumnStatement('id', 'p'), new ColumnStatement('program_id', 'r'));
 
-        $join3 = (new Join(new ColumnStatement('locations'), 'l'))
+        $join3 = (new Join(new TableReference('locations'), 'l'))
             ->setCondition(new ColumnStatement('id', 'l'), new ColumnStatement('location_id', 'r'));
 
         $built = (new SelectQuery('registrations'))

@@ -15,7 +15,7 @@ class BuiltStatement implements Built {
      * @param string $string
      * @param mixed[] $parameters
      */
-    public function __construct($string, $parameters) {
+    public function __construct($string, $parameters = []) {
         if (!is_string($string))
             throw new \InvalidArgumentException('Expected $string to be string, got ' . Util::get_type($string));
 

@@ -4,7 +4,7 @@ namespace QueryBuilder;
 
 
 class Join implements Buildable {
-    /** @var Statement|SelectQuery */
+    /** @var TableReference|SelectQuery */
     private $query;
 
     // TODO: query and join can have an alias, find a way to fix this
@@ -17,12 +17,12 @@ class Join implements Buildable {
     private $condition_collection;
 
     /**
-     * @param Statement|SelectQuery $query
+     * @param TableReference|SelectQuery $query
      * @param string $alias
      */
     public function __construct($query, $alias) {
-        if (!($query instanceof Statement) && !($query instanceof SelectQuery))
-            throw new \InvalidArgumentException('Expected $query to be Statement or SelectQuery, got ' . Util::get_type($query));
+        if (!($query instanceof TableReference) && !($query instanceof SelectQuery))
+            throw new \InvalidArgumentException('Expected $query to be TableReference or SelectQuery, got ' . Util::get_type($query));
 
         if (!is_string($alias))
             throw new \InvalidArgumentException('Expected $alias to be string, got '. Util::get_type($alias));
@@ -42,7 +42,7 @@ class Join implements Buildable {
             $built = $this->query->build();
             $string = sprintf('(%s) AS `%s`', $built->getString(), $this->alias);
             $params = array_merge($params, $built->getParameters());
-        } elseif ($this->query instanceof Statement) {
+        } elseif ($this->query instanceof TableReference) {
             $built = $this->query->build();
             $string = sprintf('%s AS `%s`', $built->getString(), $this->alias);
             $params = array_merge($params, $built->getParameters());
