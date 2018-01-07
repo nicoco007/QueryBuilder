@@ -37,17 +37,19 @@ class ConditionCollection implements Buildable {
      * @return BuiltQuery
      */
     public function build() {
-        if (count($this->conditions) == 0 && count($this->children_collections) == 0)
-            throw new \InvalidArgumentException('Condition collection must have at least one Condition or child ConditionCollection');
-
         $builder = new QueryStringBuilder();
 
-        $builder->appendBuildableCollection($this->conditions, sprintf(' %s ', $this->operator));
+        if (count($this->conditions) == 0 && count($this->children_collections) == 0) {
+            $builder->append('TRUE');
+            return $builder->toBuiltQuery();
+        }
+
+        $builder->appendBuildableCollection($this->conditions, " $this->operator ");
 
         if (count($this->conditions) > 0 && count($this->children_collections) > 0)
             $builder->append(sprintf(' %s ', $this->operator));
 
-        $builder->appendBuildableCollection($this->children_collections, sprintf(' %s ', $this->operator), '(', ')');
+        $builder->appendBuildableCollection($this->children_collections, " $this->operator ", '(', ')');
 
         return $builder->toBuiltQuery();
     }
