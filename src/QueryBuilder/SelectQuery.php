@@ -5,10 +5,10 @@ namespace QueryBuilder;
 
 class SelectQuery extends Query {
     /** @var OrderByColumn[] */
-    private $order_by;
+    private $order_by = [];
 
     /** @var SelectExpression[] */
-    private $expressions;
+    private $expressions = [];
 
     /** @var Join[] */
     private $joins = [];
