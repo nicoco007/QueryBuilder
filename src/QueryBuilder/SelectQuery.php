@@ -92,7 +92,7 @@ class SelectQuery extends Query {
      * @param string|null $table_name
      * @return $this
      */
-    public function addOrderBy($column_name, $direction = SORT_ASC, $table_name = null) {
+    public function addOrderBy($column_name, $direction = ORDER_ASC, $table_name = null) {
         if (!is_string($column_name))
             throw new \InvalidArgumentException('Expected $column_name to be string, got ' . Util::get_type($column_name));
 
