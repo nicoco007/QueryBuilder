@@ -11,10 +11,11 @@ final class InsertQueryTest extends QueryBuilderTest {
     public function testSimpleQuery() {
         $built = (new InsertQuery('users'))
             ->addAssignment(new ColumnStatement('confirmed'), new RawValueStatement(true))
+            ->addAssignment(new ColumnStatement('username'), new RawValueStatement('blah@blah.blah'))
             ->build();
 
-        $this->assertEquals("INSERT INTO `users` SET `confirmed` = ?", $built->getString());
-        $this->assertEquals([true], $built->getParameters());
+        $this->assertEquals("INSERT INTO `users` SET `confirmed` = ?, `username` = ?", $built->getString());
+        $this->assertEquals([true, 'blah@blah.blah'], $built->getParameters());
 
         $this->printResults($built);
     }

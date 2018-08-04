@@ -113,9 +113,9 @@ class InsertQuery extends Query {
 
         // TODO: PARTITION
 
-        foreach ($this->assignments as $assignment) {
+        if (!empty($this->assignments)) {
             $builder->append(' SET ');
-            $builder->appendBuildable($assignment);
+            $builder->appendBuildableCollection($this->assignments);
         }
 
         // TODO: ON DUPLICATE KEY UPDATE
