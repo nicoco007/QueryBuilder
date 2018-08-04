@@ -3,16 +3,13 @@
 namespace QueryBuilder;
 
 
-class InsertQuery extends Query
+class InsertQuery extends DataQuery
 {
     /** @var int */
     private $priority = QueryPriority::NONE;
 
     /** @var bool */
     private $ignore = false;
-
-    /** @var Assignment[] */
-    private $assignments = [];
 
     /**
      * @param string $table_name
@@ -40,18 +37,6 @@ class InsertQuery extends Query
     public function setIgnore(bool $ignore)
     {
         $this->ignore = $ignore;
-
-        return $this;
-    }
-
-    /**
-     * @param ColumnStatement $column
-     * @param Statement $statement
-     * @return $this
-     */
-    public function addAssignment(ColumnStatement $column, Statement $statement)
-    {
-        $this->assignments[] = new Assignment($column, $statement);
 
         return $this;
     }

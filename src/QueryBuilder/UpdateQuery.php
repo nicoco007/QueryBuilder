@@ -3,12 +3,7 @@
 namespace QueryBuilder;
 
 
-class UpdateQuery extends Query {
-    /**
-     * @var Assignment[]
-     */
-    private $assignments = [];
-
+class UpdateQuery extends DataQuery {
     /**
      * @var bool
      */
@@ -157,29 +152,5 @@ class UpdateQuery extends Query {
             $stringBuilder->append(' LIMIT ' . $this->limit);
 
         return $stringBuilder->toBuiltQuery();
-    }
-
-    /**
-     * @param ColumnStatement $column
-     * @param $statement
-     * @return $this
-     */
-    public function addAssignment($column, $statement) {
-        if (!($column instanceof ColumnStatement))
-            throw new \InvalidArgumentException('Expected $column to be ColumnStatement, got ' . Util::get_type($column));
-
-        if (!($statement instanceof Statement))
-            throw new \InvalidArgumentException('Expected $statement to be Statement, got ' . Util::get_type($statement));
-
-        $this->assignments[] = new Assignment($column, $statement);
-
-        return $this;
-    }
-
-    /**
-     * @return Assignment[]
-     */
-    public function getAssignments() {
-        return $this->assignments;
     }
 }
