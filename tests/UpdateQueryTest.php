@@ -25,11 +25,12 @@ final class UpdateQueryTest extends QueryBuilderTest {
             ->setLowPriority(true)
             ->setLimit(10)
             ->addAssignment(new ColumnStatement('confirmed'), new RawValueStatement(true))
+            ->addAssignment(new ColumnStatement('username'), new RawValueStatement('blah@blah.blah'))
             ->setCondition(new ColumnStatement('confirmed'), new RawValueStatement(false))
             ->build();
 
-        $this->assertEquals("UPDATE LOW_PRIORITY IGNORE `users` SET `confirmed` = ? WHERE `confirmed` = ? LIMIT 10", $built->getString());
-        $this->assertEquals([true, false], $built->getParameters());
+        $this->assertEquals("UPDATE LOW_PRIORITY IGNORE `users` SET `confirmed` = ?, `username` = ? WHERE `confirmed` = ? LIMIT 10", $built->getString());
+        $this->assertEquals([true, 'blah@blah.blah', false], $built->getParameters());
 
         $this->printResults($built);
     }

@@ -22,7 +22,7 @@ class UpdateQuery extends Query {
     /**
      * @var OrderByColumn[]
      */
-    private $order_by;
+    private $order_by = [];
 
     /**
      * @var int
@@ -73,6 +73,27 @@ class UpdateQuery extends Query {
     }
 
     /**
+     * @param string $column_name
+     * @param int $direction
+     * @param string|null $table_name
+     * @return $this
+     */
+    public function addOrderBy($column_name, $direction = ORDER_ASC, $table_name = null) {
+        if (!is_string($column_name))
+            throw new \InvalidArgumentException('Expected $column_name to be string, got ' . Util::get_type($column_name));
+
+        if (!is_int($direction))
+            throw new \InvalidArgumentException('Expected $direction to be int, got ' . Util::get_type($direction));
+
+        if ($table_name !== null && !is_string($table_name))
+            throw new \InvalidArgumentException('Expected $table_name to be string or null, got ' . Util::get_type($table_name));
+
+        $this->order_by[] = new OrderByColumn($column_name, $direction, $table_name);
+
+        return $this;
+    }
+
+    /**
      * @param int $row_count
      * @return $this
      */
@@ -107,60 +128,35 @@ class UpdateQuery extends Query {
             throw new UnsafeUpdateException('You are attempting to create an UPDATE query with no WHERE clause. Please use setAllowUnsafeUpdate if you are sure you want to do this.');
         }
 
-        $query_string = 'UPDATE';
-        $params = [];
+        $stringBuilder = new QueryStringBuilder('UPDATE');
 
         if ($this->low_priority)
-            $query_string .= ' LOW_PRIORITY';
+            $stringBuilder->append(' LOW_PRIORITY');
 
         if ($this->ignore)
-            $query_string .= ' IGNORE';
+            $stringBuilder->append(' IGNORE');
 
-        $query_string .= sprintf(' `%s`', $this->table_name);
+        $stringBuilder->append(' `%s`', $this->table_name);
 
-        $assignments_built = array_map(function($assignment) use(&$params) {
-            /** @var $assignment Assignment */
-            $built_assignment = $assignment->build();
-            $params = array_merge($params, $built_assignment->getParameters());
-            return 'SET ' . $built_assignment->getString();
-        }, $this->assignments);
-
-        $query_string .= ' ' . implode(', ', $assignments_built);
+        if (!empty($this->assignments)) {
+            $stringBuilder->append(' SET ');
+            $stringBuilder->appendBuildableCollection($this->assignments);
+        }
 
         if ($this->condition_collection !== null) {
-            $built_condition_collection = $this->condition_collection->build();
-            $query_string .= ' WHERE ' . $built_condition_collection->getString();
-            $params = array_merge($params, $built_condition_collection->getParameters());
+            $stringBuilder->append(' WHERE ');
+            $stringBuilder->appendBuildable($this->condition_collection);
         }
 
         if (!empty($this->order_by)) {
-            $query_string .= ' ORDER BY';
-
-            $order_strings = array();
-
-            foreach ($this->order_by as $order) {
-                $order_string = ' `' . $order->getColumnName() . '`';
-
-                switch($order->getDirection()) {
-                    case ORDER_ASC:
-                        $order_string .= ' ASC';
-                        break;
-                    case ORDER_DESC:
-                        $order_string .= ' DESC';
-                        break;
-                }
-
-                $order_strings[] = $order_string;
-            }
-
-            $query_string .= implode(', ', $order_strings);
+            $stringBuilder->append(' ORDER BY ');
+            $stringBuilder->appendBuildableCollection($this->order_by);
         }
 
-        if ($this->limit !== null) {
-            $query_string .= ' LIMIT ' . $this->limit;
-        }
+        if ($this->limit !== null)
+            $stringBuilder->append(' LIMIT ' . $this->limit);
 
-        return new BuiltQuery($query_string, $params);
+        return $stringBuilder->toBuiltQuery();
     }
 
     /**
